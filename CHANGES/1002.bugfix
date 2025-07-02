@@ -1,1 +1,2 @@
 Add configuration option `ipv6_disabled` to disable IPv6 for Galaxy pods.
+Galaxy API and content pods now bind to IPv4 when IPv6 is disabled.

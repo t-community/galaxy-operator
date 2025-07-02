@@ -154,9 +154,27 @@ spec:
         - name: api
           image: "{{ _image }}"
           imagePullPolicy: "{{ image_pull_policy }}"
+{% if ipv6_disabled | bool %}
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - |
+              if which pulpcore-api >/dev/null 2>&1; then
+                PULP_API_ENTRYPOINT=(pulpcore-api)
+              else
+                PULP_API_ENTRYPOINT=(gunicorn pulpcore.app.wsgi:application --name pulp-api --access-logformat 'pulp [%({correlation-id}o)s]: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
+              fi
+              exec "${PULP_API_ENTRYPOINT[@]}" \
+                --bind 0.0.0.0:8000 \
+                --timeout "${GUNICORN_TIMEOUT}" \
+                --workers "${GUNICORN_WORKERS}" \
+                --access-logfile -
+{% else %}
           # We set args, not command, so as to not override the entrypoint script
           args:
           - start-api
+{% endif %}
           env:
             - name: ENTRYPOINT
               value: "{{ _entrypoint_dir }}/pulpcore-api"
