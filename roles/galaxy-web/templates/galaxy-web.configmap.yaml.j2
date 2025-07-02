@@ -41,7 +41,9 @@ data:
         {% if route_tls_termination_mechanism | lower == 'passthrough' %}
         server {
             listen 8080 default_server;
+{% if not ipv6_disabled %}
             listen [::]:8080 default_server;
+{% endif %}
             server_name _;
 
             proxy_read_timeout {{ nginx_proxy_read_timeout }};
@@ -58,7 +60,9 @@ data:
         server {
         {% if route_tls_termination_mechanism | lower == 'passthrough' %}
             listen 8443 default_server deferred ssl;
+{% if not ipv6_disabled %}
             listen [::]:8443 default_server deferred ssl;
+{% endif %}
 
             ssl_certificate /etc/nginx/pki/web.crt;
             ssl_certificate_key /etc/nginx/pki/web.key;
@@ -73,7 +77,9 @@ data:
         {% else %}
             # Gunicorn docs suggest the use of the "deferred" directive on Linux.
             listen 8080 default_server deferred;
+{% if not ipv6_disabled %}
             listen [::]:8080 default_server deferred;
+{% endif %}
         {% endif %}
 
             # If you have a domain name, this is where to add it

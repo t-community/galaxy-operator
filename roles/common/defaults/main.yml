@@ -152,6 +152,9 @@ ingress_tls_secret: ''
 #
 route_tls_secret: ''
 
+# Disable IPv6 for Galaxy pods
+ipv6_disabled: false
+
 
 # Set content host
 content_host: '{{ ansible_operator_meta.name }}-content-svc'

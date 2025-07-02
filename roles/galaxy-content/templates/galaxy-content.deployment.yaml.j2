@@ -180,9 +180,27 @@ spec:
         - name: content
           image: "{{ _image }}"
           imagePullPolicy: "{{ image_pull_policy }}"
+{% if ipv6_disabled | bool %}
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - |
+              if which pulpcore-content >/dev/null 2>&1; then
+                PULP_CONTENT_ENTRYPOINT=(pulpcore-content)
+              else
+                PULP_CONTENT_ENTRYPOINT=(gunicorn pulpcore.content:server --worker-class aiohttp.GunicornWebWorker --name pulp-content)
+              fi
+              exec "${PULP_CONTENT_ENTRYPOINT[@]}" \
+                --bind 0.0.0.0:24816 \
+                --timeout "${GUNICORN_TIMEOUT}" \
+                --workers "${GUNICORN_WORKERS}" \
+                --access-logfile -
+{% else %}
           # We set args, not command, so as to not override the entrypoint script
           args:
           - start-content-app
+{% endif %}
 {% if combined_content.resource_requirements is defined %}
           resources: {{ combined_content.resource_requirements }}
 {% endif %}
