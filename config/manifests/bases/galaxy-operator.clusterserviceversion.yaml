@@ -235,6 +235,11 @@ spec:
         path: nginx_proxy_send_timeout
         x-descriptors:
         - urn:alm:descriptor:com.tectonic.ui:hidden
+      - description: Disable ipv6 for Galaxy pods
+        displayName: IPv6 Disabled
+        path: ipv6_disabled
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:hidden
       - displayName: Route DNS host
         path: route_host
         x-descriptors:

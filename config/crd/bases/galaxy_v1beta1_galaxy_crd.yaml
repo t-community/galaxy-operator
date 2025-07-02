@@ -248,6 +248,9 @@ spec:
                 description: NGINX proxy send timeout
                 default: 120s
                 type: string
+              ipv6_disabled:
+                description: Disable ipv6 for Galaxy pods
+                type: boolean
               service_annotations:
                 description: Annotations to add to the service
                 type: string
